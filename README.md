@@ -155,3 +155,8 @@ It's possible to set up dedicated accessor for particular instance inside of col
     @book = Book.factory.create(:generic)
     @book.categories.fiction.name == 'Schöne Literatur'
 
+# License
+
+Copyright Serge Balyuk for Avenue100 Media Solutions Inc.
+
+model_factory is released under the MIT license. Please refer to MIT-LICENSE for details.
