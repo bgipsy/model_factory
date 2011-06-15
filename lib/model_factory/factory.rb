@@ -31,6 +31,20 @@ class ModelFactory::Factory
     yield proto_model
   end
   
+  # TODO consider: aren't we going in reverse direction here?
+  # class SpecialBook < Book
+  # class OtherSpecialBook < Book
+  # 
+  # SpecialBook.factory.define :x
+  # OtherSpecialBook.factory.define :y
+  # 
+  # Book.factory.create :x => an instance of SpecialBook :x
+  # Book.factory.create :y => an instance of OtherSpecialBook :y
+  # 
+  # works pretty much like AR STI: Book.find(id) => an instance of SpecialBook
+  # 
+  # (but requires traversing hierarchy in unusual direction, i.e. against 'super')
+  
   def lookup(name)
     if @map[name]
       @map[name]
