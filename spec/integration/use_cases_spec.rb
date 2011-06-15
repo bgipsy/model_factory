@@ -60,8 +60,23 @@ describe ModelFactory do
       @book_a.price.should == 9.99
     end
     
+    it "should respect STI" do
+      class CollectibleBook < Book
+      end
+      
+      Book.factory.define :rare_book, :price => 100.00, :title => 'Rare Junk'
+      CollectibleBook.factory.define :rare_book, :price => 1000.00, :title => 'Very Rare Collectible Junk'
+      
+      @book_a = Book.factory.create :rare_book
+      @book_a.should be_instance_of(Book)
+      @book_a.price.should == 100.00
+      
+      @book_b = CollectibleBook.factory.create :rare_book
+      @book_b.should be_instance_of(CollectibleBook)
+      @book_b.price.should == 1000.00
+    end
+    
     it "should handle mass assignment protection" do
-      # WOOOOOOOOOOOOOWWWW inheritabel accessor bug OMG WTF!!!
       class SpecialBook < Book
         attr_accessible :title
       end
@@ -71,9 +86,9 @@ describe ModelFactory do
         price 24.95
       end
       
-      @x = SpecialBook.create!(:title => 'xx', :price => 12)#.price.should == 12
-      
-      SpecialBook.factory.create(:generic).price.should == 24.95
+      @book = SpecialBook.factory.create(:generic)
+      @book.should be_instance_of(SpecialBook)
+      @book.price.should == 24.95
     end
     
   end
