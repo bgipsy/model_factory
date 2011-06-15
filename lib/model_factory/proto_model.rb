@@ -7,7 +7,11 @@ class ModelFactory::ProtoModel
   def create(attributes = {}, &block)
     definition = ModelFactory::DSL::AttributeHandler.new(self).run(@attributes, &@block)
     overrides = ModelFactory::DSL::AttributeHandler.new(self).run(attributes, &block)
-    model = @klass.create!(definition.to_attributes.merge(overrides.to_attributes))
+    
+    model = @klass.new
+    assign_attributes(model, definition.to_attributes.merge(overrides.to_attributes))
+    model.save!
+    
     add_association_extensions(model, definition.to_association_extensions.merge(overrides.to_association_extensions))
     
     model
@@ -39,6 +43,12 @@ class ModelFactory::ProtoModel
     extensions.each do |name, modules|
       proxy = model.send(name)
       modules.each {|m| proxy.extend(m)}
+    end
+  end
+  
+  def assign_attributes(model, attributes)
+    attributes.each_pair do |name, value|
+      model.send("#{name}=", value)
     end
   end
   
