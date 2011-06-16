@@ -35,6 +35,7 @@ class PostgresDatabase
     ActiveRecord::Base.connection.create_database(TEST_DB[:database], TEST_DB)
     ActiveRecord::Base.establish_connection(TEST_DB)
     CreateTestSchema.migrate(:up)
+    AddForeignKeyConstraints.migrate(:up)
   end
   
   def self.establish_connection
@@ -78,6 +79,21 @@ class CreateTestSchema < ActiveRecord::Migration
     drop_table :cover_types
     drop_table :categories
   end
+end
+
+class AddForeignKeyConstraints < ActiveRecord::Migration
+  
+  def self.up
+    # TODO add FK constraints
+    # execute <<-SQL
+    #   SELECT pg_sleep(5);
+    # SQL
+  end
+  
+  def self.down
+    raise ActiveRecord::IrreversibleMigration
+  end
+  
 end
 
 if ENV['ADAPTER'] == 'postgres'
