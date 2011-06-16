@@ -281,7 +281,32 @@ describe ModelFactory do
         @book_a.cover_type.logo.should == 'paper_back.gif'
       end
       
-      it "should not allow reusing instances for has_one"
+      it "should not allow reusing instances for has_one" do
+        Comment.factory.define :generic, :body => 'Nice Book!'
+        
+        Book.factory.define :generic do
+          title 'Whatever'
+          latest_comment { use(:generic) }
+        end
+        
+        lambda {
+          Book.factory.create :generic
+        }.should raise_exception(ArgumentError)
+      end
+      
+      it "should create instances for has_one by default" do
+        Comment.factory.define :generic, :body => 'Nice Book!'
+        
+        Book.factory.define :generic do
+          title 'Whatever'
+          latest_comment :generic
+        end
+        
+        @book_a = Book.factory.create :generic
+        @book_b = Book.factory.create :generic
+        
+        @book_a.latest_comment.should_not == @book_b.latest_comment
+      end
       
     end
   end

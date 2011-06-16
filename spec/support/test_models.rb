@@ -3,6 +3,7 @@ class Book < ActiveRecord::Base
   belongs_to              :cover_type
   has_and_belongs_to_many :categories
   has_many                :comments
+  has_one                 :latest_comment, :class_name => 'Comment', :order => 'created_at DESC'
   
 end
 
