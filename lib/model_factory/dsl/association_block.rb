@@ -4,6 +4,7 @@ class ModelFactory::DSL::AssociationBlock
     attr_accessor :models
     attr_accessor :association_extensions
     attr_accessor :klass
+    attr_accessor :allow_use
     
     def create(*args, &block)
       attributes = args.extract_options!
@@ -17,7 +18,12 @@ class ModelFactory::DSL::AssociationBlock
     end
     
     def use(factory_name)
-      @models << klass.factory.use(factory_name)
+      if allow_use
+        @models << klass.factory.use(factory_name)
+      else
+        # TODO more informative message here
+        raise ArgumentError, "use is not allowed here!"
+      end
     end
     
     def remember_as(finder_name, model)
@@ -37,8 +43,8 @@ class ModelFactory::DSL::AssociationBlock
   attr_reader :models
   attr_reader :association_extensions
   
-  def initialize(klass)
-    @klass = klass
+  def initialize(klass, options = {:allow_use => true})
+    @klass, @options = klass, options.dup
   end
   
   def run(&block)
@@ -46,6 +52,7 @@ class ModelFactory::DSL::AssociationBlock
       c.models = []
       c.association_extensions = []
       c.klass = @klass
+      c.allow_use = @options[:allow_use] == true
     end
     @models = capsule.models
     @association_extensions = capsule.association_extensions

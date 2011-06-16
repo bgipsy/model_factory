@@ -25,7 +25,11 @@ class ModelFactory::CollectionAssociation < ModelFactory::Member
   private
   
   def runner
-    @runner ||= ModelFactory::DSL::AssociationBlock.new(@reflection.klass).run(&@block)
+    @runner ||= ModelFactory::DSL::AssociationBlock.new(@reflection.klass, :allow_use => allow_use).run(&@block)
+  end
+  
+  def allow_use
+    @reflection.macro != :has_many
   end
   
 end

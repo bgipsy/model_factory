@@ -229,13 +229,15 @@ describe ModelFactory do
       it "should not allow reusing instances for has_many associations" do
         Comment.factory.define :generic, :body => 'Nice Book!'
         
-        lambda {
-          Book.factory.define :generic do
-            title 'Whatever'
-            comments do
-              use :generic
-            end
+        Book.factory.define :generic do
+          title 'Whatever'
+          comments do
+            use :generic
           end
+        end
+        
+        lambda {
+          Book.factory.create :generic
         }.should raise_exception(ArgumentError)
       end
       
