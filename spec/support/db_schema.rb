@@ -1,18 +1,49 @@
-DB_FILE = File.join(File.dirname(__FILE__), '..', 'test.db')
+class SQLiteDatabase
 
-TEST_DB = {
-  :adapter  => 'sqlite3',
-  :database => DB_FILE
-}
+  DB_FILE = File.join(File.dirname(__FILE__), '..', 'test.db')
 
-ActiveRecord::Base.establish_connection(TEST_DB)
-
-class CreateTestSchema < ActiveRecord::Migration
+  TEST_DB = {
+    :adapter  => 'sqlite3',
+    :database => DB_FILE
+  }
+  
   def self.prepare_database
     File.unlink(DB_FILE) rescue nil
-    migrate(:up)
+    ActiveRecord::Base.establish_connection(TEST_DB)
+    CreateTestSchema.migrate(:up)
   end
   
+  def self.establish_connection
+    ActiveRecord::Base.establish_connection(TEST_DB)
+  end
+  
+end
+
+class PostgresDatabase
+  
+  TEST_DB = {
+    :username => 'postgres',
+    :adapter => 'postgresql',
+    :encoding => 'unicode',
+    :database => 'model_factory_test',
+    :username => 'postgres'
+  }
+  
+  def self.prepare_database
+    ActiveRecord::Base.establish_connection(TEST_DB.merge(:database => 'postgres'))
+    ActiveRecord::Base.connection.drop_database(TEST_DB[:database])
+    ActiveRecord::Base.connection.create_database(TEST_DB[:database], TEST_DB)
+    ActiveRecord::Base.establish_connection(TEST_DB)
+    CreateTestSchema.migrate(:up)
+  end
+  
+  def self.establish_connection
+    ActiveRecord::Base.establish_connection(TEST_DB)
+  end
+  
+end
+
+class CreateTestSchema < ActiveRecord::Migration
   def self.up
     create_table :categories do |t|
       t.string :name
@@ -47,4 +78,12 @@ class CreateTestSchema < ActiveRecord::Migration
     drop_table :cover_types
     drop_table :categories
   end
+end
+
+if ENV['ADAPTER'] == 'postgres'
+  puts "Using Postgres database"
+  PostgresDatabase.establish_connection
+else
+  puts "Using SQLite database"
+  SQLiteDatabase.establish_connection
 end

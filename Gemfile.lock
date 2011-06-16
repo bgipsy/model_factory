@@ -28,6 +28,7 @@ GEM
     erubis (2.6.6)
       abstract (>= 1.0.0)
     i18n (0.5.0)
+    pg (0.11.0)
     rack (1.2.1)
     rack-mount (0.6.13)
       rack (>= 1.0.0)
@@ -61,5 +62,6 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord
+  pg
   rspec-rails
   sqlite3-ruby
