@@ -7,9 +7,13 @@ class ModelFactory::CollectionAssociation < ModelFactory::Member
   def to_value
     if @block
       runner.models
-    else
+    elsif allow_use?
       @values.map do |v|
         v.is_a?(Symbol) ? @reflection.klass.factory.use(v) : v
+      end
+    else
+      @values.map do |v|
+        v.is_a?(Symbol) ? @reflection.klass.factory.create(v) : v
       end
     end
   end
@@ -25,10 +29,10 @@ class ModelFactory::CollectionAssociation < ModelFactory::Member
   private
   
   def runner
-    @runner ||= ModelFactory::DSL::AssociationBlock.new(@reflection.klass, :allow_use => allow_use).run(&@block)
+    @runner ||= ModelFactory::DSL::AssociationBlock.new(@reflection.klass, :allow_use => allow_use?).run(&@block)
   end
   
-  def allow_use
+  def allow_use?
     @reflection.macro != :has_many
   end
   

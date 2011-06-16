@@ -172,6 +172,20 @@ describe ModelFactory do
         @book_b.categories.should include(Category.factory[:fiction])
       end
       
+      it "should create instances for has_many associations with symbol arguments syntax" do
+        Comment.factory.define :generic, :body => 'Nice Book!'
+        
+        Book.factory.define :generic do
+          title 'Whatever'
+          comments :generic
+        end
+        
+        @book_a = Book.factory.create :generic
+        @book_b = Book.factory.create :generic
+        
+        @book_a.comments.should_not == @book_b.comments
+      end
+      
       it "should allow reusing instances for habtm associations with block syntax" do
         Category.factory do
           define :fiction, :name => 'Fiction'
