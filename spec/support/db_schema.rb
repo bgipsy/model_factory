@@ -74,6 +74,7 @@ class CreateTestSchema < ActiveRecord::Migration
   end
 
   def self.down
+    # TODO check rev?
     drop_table :books
     srop_table :books_categories
     drop_table :cover_types
@@ -88,6 +89,10 @@ class AddForeignKeyConstraints < ActiveRecord::Migration
     # execute <<-SQL
     #   SELECT pg_sleep(5);
     # SQL
+    execute <<-SQL
+      ALTER TABLE comments ADD CONSTRAINT book_fk FOREIGN KEY (book_id) REFERENCES books(id);
+      ALTER TABLE comments ALTER COLUMN book_id SET NOT NULL;
+    SQL
   end
   
   def self.down

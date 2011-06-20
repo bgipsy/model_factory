@@ -91,6 +91,19 @@ describe ModelFactory do
       @book.price.should == 24.95
     end
     
+    it "should respect foreign key NOT NULL constraints" do
+      Comment.factory.define :generic, :body => 'Nice Book!'
+      
+      @book = Book.factory.create :generic do
+        comments do
+          create :generic
+          create :generic
+        end
+      end
+      
+      @book.comments.size.should == 2
+    end
+    
   end
   
   describe "declarations" do
