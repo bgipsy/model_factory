@@ -11,7 +11,7 @@ class ModelFactory::DSL::AssociationBlock
       if name = args.first
         @models << @klass.factory.instantiate(name, attributes, &block)
       else
-        @models << ModelFactory::ProtoModel.new(klass, attributes, &block).create
+        @models << ModelFactory::ProtoModel.new(klass, attributes, &block).instantiate
       end
       
       @models.last
