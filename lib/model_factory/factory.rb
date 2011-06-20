@@ -21,6 +21,10 @@ class ModelFactory::Factory
     with_proto_model(name) {|proto| proto.use}
   end
   
+  def instantiate(name, attributes = {}, &block)
+    with_proto_model(name) {|proto| proto.instantiate(attributes, &block)}
+  end
+  
   alias_method :[], :use
   
   protected

@@ -4,15 +4,20 @@ class ModelFactory::ProtoModel
     @klass, @attributes, @block = klass, attributes.stringify_keys, block
   end
   
-  def create(attributes = {}, &block)
+  def instantiate(attributes = {}, &block)
     definition = ModelFactory::DSL::AttributeHandler.new(self).run(@attributes, &@block)
     overrides = ModelFactory::DSL::AttributeHandler.new(self).run(attributes, &block)
     
     model = @klass.new
     assign_attributes(model, definition.to_attributes.merge(overrides.to_attributes))
-    model.save!
-    
     add_association_extensions(model, definition.to_association_extensions.merge(overrides.to_association_extensions))
+    
+    model
+  end
+  
+  def create(attributes = {}, &block)
+    model = instantiate(attributes, &block)
+    model.save!
     
     model
   end

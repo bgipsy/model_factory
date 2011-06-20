@@ -8,7 +8,7 @@ class ModelFactory::SingleModelAssociation < ModelFactory::Member
     if @block
       ModelFactory::DSL::AssociationBlock.new(@reflection.klass, :allow_use => allow_use?).run(&@block).model
     elsif @value.is_a?(Symbol)
-      allow_use? ? @reflection.klass.factory.use(@value) : @reflection.klass.factory.create(@value)
+      allow_use? ? @reflection.klass.factory.use(@value) : @reflection.klass.factory.instantiate(@value)
     else
       @value
     end

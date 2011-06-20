@@ -9,7 +9,7 @@ class ModelFactory::DSL::AssociationBlock
     def create(*args, &block)
       attributes = args.extract_options!
       if name = args.first
-        @models << @klass.factory.create(name, attributes, &block)
+        @models << @klass.factory.instantiate(name, attributes, &block)
       else
         @models << ModelFactory::ProtoModel.new(klass, attributes, &block).create
       end

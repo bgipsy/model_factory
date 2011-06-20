@@ -13,7 +13,7 @@ class ModelFactory::CollectionAssociation < ModelFactory::Member
       end
     else
       @values.map do |v|
-        v.is_a?(Symbol) ? @reflection.klass.factory.create(v) : v
+        v.is_a?(Symbol) ? @reflection.klass.factory.instantiate(v) : v
       end
     end
   end
