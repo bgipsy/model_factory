@@ -74,11 +74,7 @@ class CreateTestSchema < ActiveRecord::Migration
   end
 
   def self.down
-    # TODO check rev?
-    drop_table :books
-    srop_table :books_categories
-    drop_table :cover_types
-    drop_table :categories
+    raise ActiveRecord::IrreversibleMigration
   end
 end
 
