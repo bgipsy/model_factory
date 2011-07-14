@@ -21,7 +21,7 @@ class ModelFactory::DSL::AttributeHandler
   end
   
   def run(attributes, &block)
-    @attributes = Hash[attributes.map {|name, value| [name.to_s, @proto_model.new_member(name, [value])]}]
+    @attributes = Hash[attributes.map {|name, value| [name.to_s, @proto_model.new_member(name, Array.wrap(value))]}]
     
     if block_given?
       capsule = setup_and_run_block(block, AttributeCapture) {|c| c.proto_model = @proto_model}

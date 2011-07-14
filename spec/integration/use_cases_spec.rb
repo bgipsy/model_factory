@@ -268,6 +268,15 @@ describe ModelFactory do
         }.should raise_exception(ArgumentError)
       end
       
+      it "should handle collections passed in hash" do
+        Comment.factory.define :generic, :body => 'Nice Book!'
+        Book.factory.define :generic, :title => 'Whatever'
+        
+        @book = Book.factory.create :generic, :comments => [:generic, :generic, :generic]
+        
+        @book.comments.count.should == 3
+      end
+      
     end
     
     describe "for single models (belongs_to, has_one)" do
